@@ -6,8 +6,12 @@ const keys = require('../config/keys');
 
 const options = {};
 options.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+// check secretOrKey stored in keys.js
 options.secretOrKey = keys.secretOrKey;
 
+// exports set up as anonymous function
+// done keyword signifies that passport middleware has completed its task
+// there is also a "next" keyword for middleware that performs a similar function
 module.exports = passport => {
   passport.use(new JwtStrategy(options, (jwt_payload, done) => {
     User.findById(jwt_payload.id)

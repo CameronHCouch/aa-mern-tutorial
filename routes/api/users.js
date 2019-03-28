@@ -39,7 +39,7 @@ router.post('/register', (req, res) => {
           email: req.body.email,
           password: req.body.password
         })
-
+        // 10 is number of rounds that bcrypt will salt the pass
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(newUser.password, salt, (err, hash) => {
             if (err) throw err;
@@ -47,7 +47,11 @@ router.post('/register', (req, res) => {
             newUser
               .save()
               .then(user => {
-                const payload = { id: user.id, name: user.name };
+                const payload = { 
+                  id: user.id, 
+                  email: user.email,
+                  handle: user.handle,
+                };
 
                 jwt.sign(
                   payload, 
@@ -79,6 +83,8 @@ router.post('/login', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
+  // .find will give us an array while .findOne returns a single obj
+
   User.findOne({email})
     .then(user => {
       if (!user) {
@@ -89,7 +95,11 @@ router.post('/login', (req, res) => {
       bcrypt.compare(password, user.password)
         .then(isMatch => {
           if (isMatch) {
-            const payload = { id: user.id, name: user.name };
+            const payload = { 
+              id: user.id, 
+              handle: user.handle, 
+              email: user.email 
+            };
 
             jwt.sign(
               payload,
