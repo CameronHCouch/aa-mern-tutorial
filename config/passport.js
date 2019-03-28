@@ -14,6 +14,7 @@ options.secretOrKey = keys.secretOrKey;
 // there is also a "next" keyword for middleware that performs a similar function
 module.exports = passport => {
   passport.use(new JwtStrategy(options, (jwt_payload, done) => {
+    // could use User.findOne( { id: jwt_payload.sub })
     User.findById(jwt_payload.id)
       .then(user => {
         if (user) {
